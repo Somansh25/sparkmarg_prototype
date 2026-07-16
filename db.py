@@ -1,6 +1,7 @@
 import os
 from typing import List, Dict, Optional, Any
 from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from pymongo import MongoClient 
 from pydantic import BaseModel, EmailStr, Field
@@ -42,6 +43,7 @@ class UserResponse(BaseModel):
     full_name: str
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # =====================================================================
@@ -118,6 +120,7 @@ class SimulationProgress(BaseModel):
     total_scores: ImpactScores = Field(default_factory=ImpactScores)
     history: List[Dict[str, Any]] = Field(default_factory=list)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class DashboardSummary(BaseModel):
