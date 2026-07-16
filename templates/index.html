@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SparkMarg - Active Career Simulation Engine</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.2.0/css/all.css" integrity="sha512-6fhK9m1e8qUYsiDHl7HIBtW9OcFmu5FDzNX5vXHc/LZDjOmNRZ0dkYmruk5hOcyXVpL7iL4D+debU81BuzPQng==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Core & Animation Stylesheets -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/animations.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <span class="brand-spark">Spark</span><span class="brand-marg">Marg</span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="/catalog" class="nav-link">Catalog</a>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+      </div>
+
+      <div class="nav-user" id="nav-user-section">
+        <a href="/login" class="btn btn-sm btn-outline">Log In</a>
+        <a href="/register" class="btn btn-sm btn-primary">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash/Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-content">
+    <div class="container catalog-container text-center">
+      
+      <!-- Hero Narrative Core -->
+      <div class="catalog-controls text-center fade-in">
+        <div class="auth-card max-w-2xl mx-auto">
+          <h1 class="catalog-title fw-bold">Test Drive Your Career Paths</h1>
+          <p class="catalog-subtitle text-muted mt-2">
+            Stop guessing what engineering and management roles look like. Drop straight into production run-times, face real-world architectural bottleneck scenarios, and build verified experiential competencies.
+          </p>
+          <div class="nav-user mt-4 justify-content-center">
+            <a href="/catalog" class="btn btn-primary px-4 py-2 hover-lift">Explore Simulation Catalog</a>
+            <a href="/register" class="btn btn-outline px-4 py-2 hover-lift">Initialize Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Blueprint Section -->
+      <div class="grid grid-3 mt-5">
+        
+        <!-- Feature Item 1 -->
+        <div class="card simulation-catalog-card hover-lift slide-up delay-1">
+          <div class="catalog-card-header">
+            <span class="catalog-card-domain text-primary">Interactive Playbooks</span>
+          </div>
+          <div>
+            <h3 class="catalog-card-title text-white">Branching Architecture</h3>
+            <p class="catalog-card-desc text-muted">
+              Every selection adapts the underlying track timeline. Navigate production rollbacks, resource balancing, and high-stakes cross-functional diplomacy.
+            </p>
+          </div>
+        </div>
+
+        <!-- Feature Item 2 -->
+        <div class="card simulation-catalog-card hover-lift slide-up delay-2">
+          <div class="catalog-card-header">
+            <span class="catalog-card-domain text-success">Quantified Evaluation</span>
+          </div>
+          <div>
+            <h3 class="catalog-card-title text-white">Competency Profiling</h3>
+            <p class="catalog-card-desc text-muted">
+              Your choices programmatically alter your core capabilities across Technical Execution, Leadership, Problem Solving, and Strategic Communication.
+            </p>
+          </div>
+        </div>
+
+        <!-- Feature Item 3 -->
+        <div class="card simulation-catalog-card hover-lift slide-up delay-3">
+          <div class="catalog-card-header">
+            <span class="catalog-card-domain text-primary">Zero Risk Sandbox</span>
+          </div>
+          <div>
+            <h3 class="catalog-card-title text-white">Real Environments</h3>
+            <p class="catalog-card-desc text-muted">
+              Encounter realistic system breakdowns, edge cases, and architectural reviews designed specifically from real tech workflows.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 SparkMarg Platform. Active Career Simulation Engine.</p>
+    </div>
+  </footer>
+
+  <!-- External Script Setup Stack -->
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

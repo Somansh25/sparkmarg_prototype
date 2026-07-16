@@ -1,0 +1,303 @@
+/* =====================================================================
+   SparkMarg Interactive Simulation Player Engine
+   ===================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const simPlayer = {
+    simId: null,
+    currentSimData: null,
+    currentStep: null,
+    selectedOptionId: null,
+
+    /**
+     * Initialize simulation state from URL query params or dataset attributes
+     */
+    async init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      this.simId = urlParams.get('id');
+
+      if (!this.simId) {
+        window.SparkMarg.showAlert('No simulation scenario specified. Redirecting to catalog...', 'danger');
+        setTimeout(() => { window.location.href = '/catalog'; }, 2000);
+        return;
+      }
+
+      this.bindEvents();
+      await this.loadSimulationData();
+      await this.initializeSession();
+    },
+
+    /**
+     * Bind DOM interaction listeners
+     */
+    bindEvents() {
+      const submitBtn = document.getElementById('submit-decision-btn');
+      if (submitBtn) {
+        submitBtn.addEventListener('click', () => this.handleDecisionSubmit());
+      }
+
+      const nextBtn = document.getElementById('next-step-btn');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => this.advanceToNextStep());
+      }
+    },
+
+    /**
+     * Fetch complete simulation scenario structure from API
+     */
+    async loadSimulationData() {
+      try {
+        this.currentSimData = await window.SparkMarg.apiRequest(`/api/v1/simulations/${this.simId}`);
+        this.renderSimulationHeader();
+      } catch (error) {
+        window.SparkMarg.showAlert(`Failed to load simulation: ${error.message}`, 'danger');
+      }
+    },
+
+    /**
+     * Start session or restore progress checkpoint
+     */
+    async initializeSession() {
+      try {
+        const progress = await window.SparkMarg.apiRequest(`/api/v1/progress/start/${this.simId}`, {
+          method: 'POST'
+        });
+
+        this.updateScorecardUI(progress.total_scores);
+
+        if (progress.status === 'COMPLETED') {
+          this.renderCompletionScreen(progress.total_scores);
+        } else {
+          this.loadStep(progress.current_step_id);
+        }
+      } catch (error) {
+        window.SparkMarg.showAlert(`Failed to initialize session: ${error.message}`, 'danger');
+      }
+    },
+
+    /**
+     * Render header metadata (Title, Domain, Difficulty)
+     */
+    renderSimulationHeader() {
+      const titleElem = document.getElementById('sim-title');
+      const domainElem = document.getElementById('sim-domain');
+      const diffElem = document.getElementById('sim-difficulty');
+
+      if (titleElem) titleElem.textContent = this.currentSimData.title;
+      if (domainElem) domainElem.textContent = this.currentSimData.domain;
+      if (diffElem) {
+        diffElem.textContent = this.currentSimData.difficulty;
+        diffElem.className = `badge badge-${this.currentSimData.difficulty.toLowerCase()}`;
+      }
+    },
+
+    /**
+     * Render active step scenario and decision choices
+     */
+    loadStep(stepId) {
+      this.selectedOptionId = null;
+      const step = this.currentSimData.steps.find(s => s.step_id === stepId);
+
+      if (!step) {
+        window.SparkMarg.showAlert('Step configuration error. Resetting simulation...', 'danger');
+        return;
+      }
+
+      this.currentStep = step;
+
+      // Hide feedback panel and next controls
+      const feedbackBox = document.getElementById('sim-feedback-container');
+      const nextBtn = document.getElementById('next-step-btn');
+      const submitBtn = document.getElementById('submit-decision-btn');
+
+      if (feedbackBox) feedbackBox.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+      if (submitBtn) {
+        submitBtn.style.display = 'inline-flex';
+        submitBtn.disabled = true;
+      }
+
+      // Render Step Text
+      const stepTitle = document.getElementById('step-title');
+      const stepScenario = document.getElementById('step-scenario');
+      const optionsContainer = document.getElementById('options-container');
+
+      if (stepTitle) stepTitle.textContent = step.title;
+      if (stepScenario) stepScenario.textContent = step.scenario;
+
+      // Render Options
+      if (optionsContainer) {
+        optionsContainer.innerHTML = '';
+        step.options.forEach((opt, idx) => {
+          const card = document.createElement('div');
+          card.className = 'sim-option-card animate-slide-up';
+          card.style.animationDelay = `${idx * 100}ms`;
+          card.dataset.optionId = opt.option_id;
+
+          card.innerHTML = `
+            <div style="font-weight: 700; color: var(--accent); min-width: 24px;">
+              ${String.fromCharCode(65 + idx)}.
+            </div>
+            <div style="flex: 1;">
+              <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.5;">
+                ${window.SparkMarg.escapeHtml(opt.text)}
+              </p>
+            </div>
+          `;
+
+          card.addEventListener('click', () => this.selectOption(opt.option_id, card));
+          optionsContainer.appendChild(card);
+        });
+      }
+    },
+
+    /**
+     * Highlight chosen option card
+     */
+    selectOption(optionId, cardElem) {
+      this.selectedOptionId = optionId;
+
+      document.querySelectorAll('.sim-option-card').forEach(c => {
+        c.classList.remove('selected');
+      });
+      cardElem.classList.add('selected');
+
+      const submitBtn = document.getElementById('submit-decision-btn');
+      if (submitBtn) submitBtn.disabled = false;
+    },
+
+    /**
+     * Submit selected option decision to backend engine
+     */
+    async handleDecisionSubmit() {
+      if (!this.selectedOptionId) return;
+
+      const submitBtn = document.getElementById('submit-decision-btn');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const result = await window.SparkMarg.apiRequest(`/api/v1/progress/${this.simId}/decision`, {
+          method: 'POST',
+          body: {
+            simulation_id: this.simId,
+            step_id: this.currentStep.step_id,
+            option_id: this.selectedOptionId
+          }
+        });
+
+        this.renderDecisionFeedback(result);
+        this.updateScorecardUI(result.updated_total_scores);
+
+        if (result.is_completed) {
+          const nextBtn = document.getElementById('next-step-btn');
+          if (nextBtn) {
+            nextBtn.textContent = 'View Final Results';
+            nextBtn.dataset.completed = 'true';
+            nextBtn.style.display = 'inline-flex';
+          }
+        } else {
+          const nextBtn = document.getElementById('next-step-btn');
+          if (nextBtn) {
+            nextBtn.dataset.nextStepId = result.next_step_id;
+            nextBtn.style.display = 'inline-flex';
+          }
+        }
+      } catch (error) {
+        window.SparkMarg.showAlert(`Decision processing error: ${error.message}`, 'danger');
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    },
+
+    /**
+     * Show consequence feedback and impact
+     */
+    renderDecisionFeedback(result) {
+      const feedbackBox = document.getElementById('sim-feedback-container');
+      const feedbackText = document.getElementById('sim-feedback-text');
+      const submitBtn = document.getElementById('submit-decision-btn');
+
+      if (submitBtn) submitBtn.style.display = 'none';
+
+      if (feedbackText) feedbackText.textContent = result.feedback;
+      if (feedbackBox) {
+        feedbackBox.className = 'sim-feedback-box animate-scale-up';
+        feedbackBox.style.display = 'block';
+      }
+    },
+
+    /**
+     * Advance engine to next step ID or completion screen
+     */
+    advanceToNextStep() {
+      const nextBtn = document.getElementById('next-step-btn');
+      if (nextBtn.dataset.completed === 'true') {
+        window.location.reload();
+      } else {
+        this.loadStep(nextBtn.dataset.nextStepId);
+      }
+    },
+
+    /**
+     * Synchronize metric counters on sidebar UI
+     */
+    updateScorecardUI(scores) {
+      if (!scores) return;
+
+      const lead = document.getElementById('score-leadership');
+      const tech = document.getElementById('score-technical');
+      const prob = document.getElementById('score-problem-solving');
+      const comm = document.getElementById('score-communication');
+
+      if (lead) lead.textContent = scores.leadership || 0;
+      if (tech) tech.textContent = scores.technical || 0;
+      if (prob) prob.textContent = scores.problem_solving || 0;
+      if (comm) comm.textContent = scores.communication || 0;
+    },
+
+    /**
+     * Render full completion wrap-up state
+     */
+    renderCompletionScreen(finalScores) {
+      const mainPlayer = document.getElementById('sim-player-card');
+      if (!mainPlayer) return;
+
+      mainPlayer.innerHTML = `
+        <div style="text-align: center; padding: 2.5rem 1rem;" class="animate-scale-up">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+            Simulation Completed!
+          </h2>
+          <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 2rem auto;">
+            You have successfully navigated all scenario nodes for <strong>${window.SparkMarg.escapeHtml(this.currentSimData.title)}</strong>.
+          </p>
+
+          <div class="grid grid-4" style="margin-bottom: 2rem;">
+            <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Leadership</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${finalScores.leadership || 0}</div>
+            </div>
+            <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Technical</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);">${finalScores.technical || 0}</div>
+            </div>
+            <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Problem Solving</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${finalScores.problem_solving || 0}</div>
+            </div>
+            <div style="background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Communication</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">${finalScores.communication || 0}</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="/catalog" class="btn btn-secondary">Explore Catalog</a>
+            <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+          </div>
+        </div>
+      `;
+    }
+  };
+
+  simPlayer.init();
+});

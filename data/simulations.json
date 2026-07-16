@@ -1,0 +1,55 @@
+[
+  {
+    "id": "sim_ai_02",
+    "title": "LLM Quantization Strategy",
+    "domain": "Artificial Intelligence",
+    "tech_stack": "PyTorch, HuggingFace, CUDA",
+    "difficulty": "Expert",
+    "description": "Optimize a heavy 70B parameter open-source foundation model for real-time mobile low-latency runtimes.",
+    "estimated_minutes": 25,
+    "steps": [
+      {
+        "step_id": "Node_Quant_01",
+        "title": "Initial Model Compression Assessment",
+        "scenario": "The uncompressed foundation model consumes over 140GB of VRAM, exceeding local edge hardware profiles. Which compression strategy do you execute?",
+        "options": [
+          {
+            "option_id": "opt_01_01",
+            "text": "Implement 4-bit AWQ (Activation-aware Weight Quantization) to shield high-salience activation channels.",
+            "feedback": "Excellent choice. AWQ preserves performance across critical attention steps while cutting memory overhead.",
+            "next_step_id": "Node_Quant_02",
+            "impact": {"leadership": 10, "technical": 25, "problem_solving": 20, "communication": 15}
+          },
+          {
+            "option_id": "opt_01_02",
+            "text": "Deploy uniform scalar INT8 quantization across all layers.",
+            "feedback": "Perplexity spikes dramatically. Outlier features are dropped, causing severe model accuracy degradation.",
+            "next_step_id": "Node_Quant_02",
+            "impact": {"leadership": 5, "technical": 10, "problem_solving": 5, "communication": 10}
+          }
+        ]
+      },
+      {
+        "step_id": "Node_Quant_02",
+        "title": "Runtime Memory Bandwidth Triage",
+        "scenario": "The model sizes fit into local memory, but heavy serialization latency creates an execution bottleneck. How do you resolve this compile-time lag?",
+        "options": [
+          {
+            "option_id": "opt_02_01",
+            "text": "Write a custom fused CUDA kernel wrapper to merge flash-attention optimization steps.",
+            "feedback": "Outstanding engineering choice! Layer fusion reduces high-latency global memory fetches completely.",
+            "next_step_id": null,
+            "impact": {"leadership": 15, "technical": 30, "problem_solving": 25, "communication": 10}
+          },
+          {
+            "option_id": "opt_02_02",
+            "text": "Increase core thread distribution counts inside standard orchestration parameters.",
+            "feedback": "Modest speed gains achieved, but execution hits fundamental limitations without explicit hardware layer splits.",
+            "next_step_id": null,
+            "impact": {"leadership": 10, "technical": 15, "problem_solving": 15, "communication": 10}
+          }
+        ]
+      }
+    ]
+  }
+]

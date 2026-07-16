@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - SparkMarg</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.2.0/css/all.css" integrity="sha512-6fhK9m1e8qUYsiDHl7HIBtW9OcFmu5FDzNX5vXHc/LZDjOmNRZ0dkYmruk5hOcyXVpL7iL4D+debU81BuzPQng==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Core & Animation Stylesheets -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/animations.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <span class="brand-spark">Spark</span><span class="brand-marg">Marg</span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="/catalog" class="nav-link">Catalog</a>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+      </div>
+
+      <div class="nav-user" id="nav-user-section">
+        <a href="/login" class="btn btn-sm btn-outline">Log In</a>
+        <a href="/register" class="btn btn-sm btn-primary">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash/Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-content">
+    <div class="container auth-container">
+      <div class="card auth-card animate-scale-up">
+        <h2 class="auth-title">Create Your Account</h2>
+        <p class="auth-subtitle">
+          Join SparkMarg today to begin actively building and simulating your career path.
+        </p>
+
+        <form id="register-form">
+          <div class="form-group">
+            <label class="form-label" for="username">Full Name</label>
+            <input type="text" id="username" class="form-control" autocomplete="username" 
+  required 
+  placeholder="Enter your username">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" class="form-control" required placeholder="Enter Email Address">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" name="user_password" class="form-control" placeholder="Enter your password" minlength="8" maxlength="32" autocomplete="new-password" required >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" class="form-control" placeholder="confirm-password" autocomplete="new-password" required>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn btn-primary btn-block">
+            Get Started
+          </button>
+        </form>
+
+        <div class="auth-footer-link">
+          <span class="text-muted">Already have an account?</span>
+          <a href="/login" class="link-semibold">Log in</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 SparkMarg Platform. Active Career Simulation Engine.</p>
+    </div>
+  </footer>
+
+  <!-- External Script Setup -->
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/auth.js"></script>
+</body>
+</html>

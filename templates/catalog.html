@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation Catalog - SparkMarg</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.2.0/css/all.css" integrity="sha512-6fhK9m1e8qUYsiDHl7HIBtW9OcFmu5FDzNX5vXHc/LZDjOmNRZ0dkYmruk5hOcyXVpL7iL4D+debU81BuzPQng==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Core & Animation Stylesheets -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/animations.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <span class="brand-spark">Spark</span><span class="brand-marg">Marg</span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="/catalog" class="nav-link active">Catalog</a>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+      </div>
+
+      <div class="nav-user" id="nav-user-section">
+        <a href="/login" class="btn btn-sm btn-outline">Log In</a>
+        <a href="/register" class="btn btn-sm btn-primary">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash/Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-content">
+    <div class="container catalog-container">
+      
+      <!-- Header & Search Controls -->
+      <div class="catalog-controls">
+        <div class="catalog-title-block">
+          <h1 class="catalog-title">Simulation Catalog</h1>
+          <p class="catalog-subtitle">Select a career track and drop into active decision-making scenarios.</p>
+        </div>
+        
+        <div class="search-wrapper">
+          <input type="text" id="search-input" class="form-control search-input" placeholder="Search title, tech stack, or role...">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+      <!-- Domain Filter Pills -->
+      <div class="filter-pills-container">
+        <button class="domain-pill active" data-domain="ALL">All Core Paths</button>
+        <button class="domain-pill" data-domain="Software Engineering">Software Engineering</button>
+        <button class="domain-pill" data-domain="Artificial Intelligence">AI & Machine Learning</button>
+        <button class="domain-pill" data-domain="Product Management">Product Management</button>
+      </div>
+
+      <!-- Dynamic Catalog Grid -->
+      <div id="catalog-grid" class="grid grid-3">
+        <!-- Populated dynamically via static/js/catalog.js -->
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 SparkMarg Platform. Active Career Simulation Engine.</p>
+    </div>
+  </footer>
+
+  <!-- External Script Setup -->
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/catalog.js"></script>
+</body>
+</html>
