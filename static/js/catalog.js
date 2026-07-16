@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="font-size: 0.8rem; color: var(--text-muted);">
               ⏱️ ${sim.estimated_minutes || 15} mins
             </span>
-            <a href="/simulation?id=${sim.id}" class="btn btn-primary btn-sm">Start Simulation</a>
+            <a href="/simulation?id=${window.SparkMarg.escapeHtml(sim.id)}" class="btn btn-primary btn-sm">Start Simulation</a>
           </div>
         </div>
       `).join('');
