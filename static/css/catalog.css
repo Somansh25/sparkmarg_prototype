@@ -1,0 +1,11 @@
+/* ==========================================================================
+   Simulation Catalog Specific Layouts
+   ========================================================================== */
+#page-catalog .catalog-hero {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--primary-light) 100%);
+    padding: var(--space-12);
+    border-radius: var(--radius-2xl);
+    margin-bottom: var(--space-8);
+    border: 1px solid var(--border);
+    text-align: center;
+}

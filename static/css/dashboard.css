@@ -1,0 +1,14 @@
+/* ==========================================================================
+   Analytics Dashboard Visualization Styles
+   ========================================================================== */
+#page-dashboard .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-6);
+}
+
+#page-dashboard .radar-chart-container {
+    background: var(--bg-card);
+    padding: var(--space-8);
+    border-radius: var(--radius-xl);
+}

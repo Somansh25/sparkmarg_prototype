@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.2);">
                 ${window.SparkMarg.escapeHtml(sim.domain)}
               </span>
-              <span class="badge badge-${sim.difficulty.toLowerCase()}">
+              <span class="badge badge-${window.SparkMarg.escapeHtml(sim.difficulty.toLowerCase())}">
                 ${window.SparkMarg.escapeHtml(sim.difficulty)}
               </span>
             </div>
@@ -126,9 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div style="border-top: 1px solid var(--border); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 0.8rem; color: var(--text-muted);">
-              ⏱️ ${sim.estimated_minutes || 15} mins
+              ⏱️ ${window.SparkMarg.escapeHtml(String(sim.estimated_minutes || 15))} mins
             </span>
-            <a href="/simulation?id=${sim.id}" class="btn btn-primary btn-sm">Start Simulation</a>
+            <a href="/simulation?id=${window.SparkMarg.escapeHtml(sim.id)}" class="btn btn-primary btn-sm">Start Simulation</a>
           </div>
         </div>
       `).join('');

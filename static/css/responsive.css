@@ -1,87 +1,392 @@
-/* =====================================================================
-   SparkMarg Responsive Engine (Desktop-First)
-   ===================================================================== */
+/* ==========================================================================
+   1. LAPTOP & SMALL DESKTOP VIEWPORT OVERRIDES (Max-Width: 1200px)
+   ========================================================================== */
 
-/* --- Laptops & Small Desktops (max-width: 1024px) --- */
-@media screen and (max-width: 1024px) {
-  .container, .nav-container, .footer-container {
-    max-width: 95%;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+@media (max-width: 1200px) {
+  .container,
+  .nav-container,
+  .catalog-container,
+  .dashboard-container,
+  .footer-container {
+    max-width: 960px;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+
+  :root {
+    --fs-5xl: 2.75rem;
+    --fs-4xl: 2rem;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .pricing-card {
+    min-height: 27rem;
+    padding: var(--space-8) var(--space-5) var(--space-5);
+  }
+}
+
+/* ==========================================================================
+   2. SMALL LAPTOP & LARGE TABLET ENVIRONMENT LAYOUTS (Max-Width: 1024px)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .container,
+  .nav-container,
+  .catalog-container,
+  .dashboard-container,
+  .footer-container {
+    max-width: 720px;
+  }
+
+  :root {
+    --fs-5xl: 2.5rem;
+    --fs-4xl: 1.75rem;
+    --fs-3xl: 1.5rem;
   }
 
   .grid-3 {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-}
-
-/* --- Tablets & Large Phones (max-width: 768px) --- */
-@media screen and (max-width: 768px) {
-  .navbar .nav-container {
-    flex-direction: column;
-    height: auto;
-    padding: 1rem;
-    gap: 1rem;
   }
 
-  .nav-links {
-    order: 2;
-    width: 100%;
-    justify-content: center;
-    margin: 0.5rem 0;
-  }
-
-  .nav-user {
-    order: 3;
-    width: 100%;
-    justify-content: center;
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .grid-dashboard {
     grid-template-columns: 1fr;
+    gap: var(--space-8);
   }
 
   .dashboard-sidebar {
-    order: 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+    align-items: start;
   }
 
-  .dashboard-main {
-    order: 1;
+  .stats-card {
+    height: 100%;
+  }
+
+  .skills-card {
+    height: 100%;
+  }
+}
+
+/* ==========================================================================
+   3. SMALL TABLET & MOBILE NAV REFACTOR BOUNDARIES (Max-Width: 768px)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .container,
+  .nav-container,
+  .catalog-container,
+  .dashboard-container,
+  .footer-container {
+    max-width: 100%;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  :root {
+    --fs-5xl: 2.25rem;
+    --fs-4xl: 1.5rem;
+    --fs-3xl: 1.35rem;
+    --fs-2xl: 1.25rem;
+    --fs-lg: 1.05rem;
+  }
+
+  /* Core Layout Unification to Single Stream Blocks */
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .dashboard-sidebar {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  /* Hamburger Toggle Display Execution */
+  .hamburger {
+    display: block;
+  }
+
+  /* Full Screen Mobile View Drawer Navigation State Layer */
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--bg-card);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-12) var(--space-6);
+    z-index: var(--z-header);
+    transition: left var(--transition-normal);
+    box-shadow: var(--shadow-xl);
+    overflow-y: auto;
+  }
+
+  .nav-links.active {
+    left: 0;
+  }
+
+  .nav-link {
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+    padding: var(--space-2) 0;
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+
+  .nav-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-auth {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-3);
+  }
+
+  .nav-auth .btn {
+    width: 100%;
+  }
+
+  .user-profile-menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-dropdown {
+    position: relative;
+    top: var(--space-2);
+    right: auto;
+    width: 100%;
+    box-shadow: none;
+    border-color: var(--border);
+    background-color: var(--bg-main);
+  }
+
+  /* Hero Architecture Compression */
+  .hero-section {
+    padding: var(--space-12) 0 var(--space-8);
+    text-align: center;
+  }
+
+  .hero-headline {
+    line-height: 1.2;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-3);
+  }
+
+  .hero-cta-group .btn,
+  .hero-cta-group a {
+    width: 100%;
+  }
+
+  /* Dynamic Controls Realignment */
+  .catalog-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+
+  .search-wrapper {
+    max-width: 100%;
+  }
+
+  .filter-pills-container {
+    gap: var(--space-2);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .domain-pill {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* Pricing Structural Grid Normalization */
+  .pricing-card-featured {
+    transform: none !important;
+  }
+
+  .pricing-card {
+    min-height: auto;
+  }
+
+  /* Interactive Sandbox Node Modifiers */
+  .simulation-card {
+    padding: var(--space-6) var(--space-4);
+    min-height: auto;
+  }
+
+  .node-text {
+    font-size: var(--fs-base);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+  }
+
+  .choice-btn {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--fs-sm);
+  }
+
+  .choice-btn:hover {
+    transform: none;
+  }
+
+  /* Score Grid Distribution */
+  .score-breakdown .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* Modal Dialog Adaptations */
+  .modal-overlay {
+    padding: var(--space-2);
+  }
+
+  .modal-box {
+    max-width: 100%;
+    border-radius: var(--radius-xl);
+  }
+
+  .modal-header {
+    padding: var(--space-4) var(--space-4) 0;
+  }
+
+  .modal-body {
+    padding: var(--space-4);
+  }
+
+  /* Persistent Live Notification Banners */
+  .alert-container {
+    top: var(--space-4);
+    right: var(--space-4);
+    left: var(--space-4);
+    width: auto;
+    max-width: none;
+  }
+
+  /* Functional Component Extensions */
+  .dashboard-stream-row {
+    flex-direction: column;
+    align-items: start;
+    gap: var(--space-4);
+  }
+
+  .dashboard-stream-row .btn {
+    width: 100%;
   }
 
   .simulation-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .grid-3, .grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-card {
-    padding: 1.5rem;
-    margin: 1rem;
+    align-items: start;
+    gap: var(--space-3);
   }
 }
 
-/* --- Small Mobile Devices (max-width: 480px) --- */
-@media screen and (max-width: 480px) {
-  .catalog-title {
-    font-size: 1.75rem;
+/* ==========================================================================
+   4. ULTRA-COMPACT MOBILE PHONES & PORTRAIT DISPLAYS (Max-Width: 480px)
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .container,
+  .nav-container,
+  .catalog-container,
+  .dashboard-container,
+  .footer-container {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
   }
 
-  .filter-pills-container {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 0.5rem;
-    -webkit-overflow-scrolling: touch;
+  :root {
+    --fs-5xl: 1.875rem;
+    --fs-4xl: 1.35rem;
+    --fs-3xl: 1.2rem;
+    --fs-base: 0.925rem;
+    --fs-sm: 0.85rem;
   }
 
-  .btn {
-    width: 100%;
-    justify-content: center;
+  .hero-badge {
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.65rem;
+  }
+
+  .feature-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: var(--fs-lg);
+  }
+
+  .pricing-price {
+    font-size: var(--fs-4xl);
+  }
+
+  .score-breakdown .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .faq-trigger {
+    padding: var(--space-4) var(--space-3);
+  }
+}
+
+/* ==========================================================================
+   5. HARDWARE ACCELERATION ACCESSIBILITY OVERRIDES (User Motion Settings)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+  }
+
+  .hover-lift:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-md) !important;
   }
 }

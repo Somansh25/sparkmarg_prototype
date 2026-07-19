@@ -2,22 +2,24 @@ import os
 import logging
 from datetime import datetime, timezone
 from functools import wraps
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 from flask import Flask, render_template, jsonify, request, abort
+from flask_cors import CORS
 from bson.objectid import ObjectId
 from db import get_db
 from auth import hash_password, verify_password, create_access_token
+from dotenv import load_dotenv
 
 # ==========================================
 # SYSTEM SETUP & LOGGING CONFIGURATION
 # ==========================================
-from dotenv import load_dotenv
-
-# Load local environmental variables from your hidden secure .env asset file
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "dev_super_secret_key_change_in_production_32bytes_long")
+CORS(app)  # Enable Cross-Origin Resource Sharing for frontend decoupling
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['ALGORITHM'] = os.environ.get('ALGORITHM','HS256')
 
 logger = logging.getLogger("SparkMargCore")
 
@@ -38,11 +40,14 @@ def token_required(f):
         
         try:
             token = auth_header.split(" ")[1]
-            payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=[app.config['ALGORITHM']])
             current_user_id = str(payload.get("sub"))
             if not current_user_id:
                 raise ValueError("Subject claim missing from token profile payload.")
-        except (JWTError, ValueError) as token_err:
+        except ExpiredSignatureError:
+            logger.warning("Token expiration encountered.")
+            return jsonify({"error": "Access token has expired"}), 401
+        except (JWTError, ValueError, IndexError) as token_err:
             logger.warning(f"Unauthorized intrusion blocked: {token_err}")
             return jsonify({"error": "Invalid access credentials context profile"}), 401
             
@@ -70,6 +75,9 @@ def dashboard(): return render_template('dashboard.html')
 
 @app.route('/simulation')
 def simulation(): return render_template('simulation.html')
+
+@app.route('/temp')
+def temp(): return render_template('temp.html')
 
 
 # ==========================================
@@ -214,9 +222,9 @@ def submit_decision_choice(current_user_id, sim_id):
     data = request.get_json(silent=True) or {}
     step_id = data.get("step_id")
     option_id = data.get("option_id")
-    
+
     if not all([sim_id, step_id, option_id]):
-        return jsonify({"error": "Missing required transaction payloads: simulation_id, step_id, and option_id."}), 400
+        return jsonify({"error": "Missing parameters"}), 400
         
     try:
         db = get_db()
@@ -227,26 +235,20 @@ def submit_decision_choice(current_user_id, sim_id):
             "simulation_id": sim_id, 
             "status": "IN_PROGRESS"
         })
-        if not session:
-            return jsonify({"error": "No active simulation logs found for this targeted space context."}), 404
+        if not session: return jsonify({"error": "Session not found"}), 404
+        if session["current_step_id"] != step_id: return jsonify({"error": "State mismatch"}), 409
             
-        if session["current_step_id"] != step_id:
-            return jsonify({"error": "Out of sync state error. Node pointer synchronization mismatch."}), 409
-            
-        # 2. Fetch the master blueprint configuration definition map
+        # 2. Fetch Blueprint
         blueprint = db["simulations"].find_one({"id": sim_id})
-        if not blueprint:
-            return jsonify({"error": "Underlying simulation structural configuration mapping missing."}), 404
+        if not blueprint: return jsonify({"error": "Blueprint missing"}), 404
             
         # Find active node structures matching the timeline sequence
         step_node = next((s for s in blueprint.get("steps", []) if s["step_id"] == step_id), None)
-        if not step_node:
-            return jsonify({"error": "Targeted timeline step block details unavailable."}), 404
+        if not step_node: return jsonify({"error": "Step not found"}), 404
             
         # Find explicit details matching selected tracking action selections
         chosen_option = next((o for o in step_node.get("options", []) if o["option_id"] == option_id), None)
-        if not chosen_option:
-            return jsonify({"error": "Invalid alternative option node selection mapping reference code"}), 400
+        if not chosen_option: return jsonify({"error": "Option not found"}), 400
             
         # 3. Calculate competency increments and append to the user history ledger
         current_scores = session.get("scores", {"leadership": 0, "technical": 0, "problem_solving": 0, "communication": 0})
